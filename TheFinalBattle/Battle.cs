@@ -1,26 +1,31 @@
 ﻿namespace TheFinalBattle;
 
-
 class Battle(Party heroParty, Party monsterParty)
 {
     public void Run()
     {
-        PartyType currentParty = PartyType.Hero;
+        PartyType currentPartyType = PartyType.Hero;
         while (true)
         {
-            foreach (var member in GetParty(currentParty).Members)
+            var currentParty = GetParty(currentPartyType);
+            foreach (var member in currentParty.Members)
             {
                 Console.WriteLine($"It is {member.Name}'s turn...");
-                member.RandomAction();
+                currentParty.Player.PickAction(member,
+                    GetParty(currentPartyType),
+                    GetOtherParty(currentPartyType));
                 Thread.Sleep(500);
             }
-            
+
             // Rotate to next party
-            currentParty = (PartyType)(((int)currentParty + 1) % 2);
-            
+            currentPartyType = GetOtherPartyType(currentPartyType);
+
             Console.WriteLine("----------");
         }
     }
+
+    private PartyType GetOtherPartyType(PartyType partyType) => (PartyType)(((int)partyType + 1) % 2);
+    private Party GetOtherParty(PartyType partyType) => GetParty(GetOtherPartyType(partyType));
 
     private Party GetParty(PartyType type) => type switch
     {

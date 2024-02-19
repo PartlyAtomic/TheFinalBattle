@@ -1,15 +1,13 @@
 ﻿namespace TheFinalBattle;
 
-class Action
+interface IAction
 {
-    public virtual void Act(Character instigator, List<Character>? targets)
-    {
-    }
+    public void Act(ICharacter instigator, List<ICharacter>? targets);
 }
 
-class ActionDoNothing : Action
+class ActionDoNothing : IAction
 {
-    public override void Act(Character instigator, List<Character>? targets)
+    public void Act(ICharacter instigator, List<ICharacter>? targets)
     {
         Console.WriteLine($"{instigator.Name} did NOTHING");
     }
