@@ -11,7 +11,23 @@ class ComputerPlayer : IPlayer
     {
         // Add logic for choosing target here as well, once action is known
         var action = RandomAction(currentCharacter);
-        action?.Act(currentCharacter, null);
+        if (action == null)
+        {
+            Console.WriteLine($"{currentCharacter.Name} had no available actions...");
+            return;
+        }
+
+        List<ICharacter> targets = action.TargetType switch
+        {
+            ActionTargetType.None => [],
+            ActionTargetType.Self => [currentCharacter],
+            ActionTargetType.SelfParty => [..selfParty.Members],
+            ActionTargetType.EnemyParty => [..enemyParty.Members],
+            ActionTargetType.SingleEnemy => [enemyParty.Members[Random.Shared.Next(enemyParty.Members.Count)]],
+            _ => throw new ArgumentOutOfRangeException()
+        };
+
+        action.Act(currentCharacter, targets);
     }
 
     public IAction? RandomAction(ICharacter character)

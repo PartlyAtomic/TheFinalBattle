@@ -14,12 +14,12 @@ interface ICharacter
 
 class CharacterSkeleton : ICharacter
 {
-    public IReadOnlyList<IAction> Actions { get; } = [new ActionDoNothing()];
-    public string Name => "SKELETON"; // TODO: Do as attribute?
+    public IReadOnlyList<IAction> Actions { get; } = [new ActionBoneCrunch()];
+    public string Name => "SKELETON";
 }
 
 class CharacterTrueProgrammer(string programmerName) : ICharacter
 {
-    public IReadOnlyList<IAction> Actions { get; } = [new ActionDoNothing()];
+    public IReadOnlyList<IAction> Actions { get; } = [new ActionPunch()];
     public string Name => programmerName;
 }
