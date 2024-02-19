@@ -4,8 +4,9 @@ using TheFinalBattle;
 // Setup parties
 var programmerName = ReadAnswer("What is your name, True Programmer?") ?? "True Programmer";
 var heroParty = new Party(new ComputerPlayer(), [new CharacterTrueProgrammer(programmerName)]);
-var monsterParty = new Party(new ComputerPlayer(), [new CharacterSkeleton()]);
+var monsterParty1 = new Party(new ComputerPlayer(), [new CharacterSkeleton()]);
+var monsterParty2 = new Party(new ComputerPlayer(), [new CharacterSkeleton(), new CharacterSkeleton()]);
+List<Party> monsterParties = [monsterParty1, monsterParty2];
 
-// Start battle
-var battle = new Battle(heroParty, monsterParty);
-battle.Run();
+Battle.RunSeries(heroParty, monsterParties);
+

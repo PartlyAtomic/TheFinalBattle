@@ -1,8 +1,15 @@
 ﻿namespace TheFinalBattle;
 
+enum PartyType
+{
+    Hero,
+    Monster
+}
+
 class Battle(Party heroParty, Party monsterParty)
 {
-    public void Run()
+    // Returns winner
+    public PartyType Run()
     {
         PartyType currentPartyType = PartyType.Hero;
         while (true)
@@ -14,11 +21,12 @@ class Battle(Party heroParty, Party monsterParty)
                 currentParty.Player.PickAction(member,
                     GetParty(currentPartyType),
                     GetOtherParty(currentPartyType));
-                
+
                 if (GetOtherParty(currentPartyType).Members.Count == 0)
                 {
                     break;
                 }
+
                 Thread.Sleep(500);
             }
 
@@ -27,7 +35,7 @@ class Battle(Party heroParty, Party monsterParty)
                 Console.WriteLine("A party has been incapacitated. Battle over.");
                 break;
             }
-            
+
             // Rotate to next party
             currentPartyType = GetOtherPartyType(currentPartyType);
 
@@ -36,14 +44,34 @@ class Battle(Party heroParty, Party monsterParty)
 
         if (GetParty(PartyType.Hero).Members.Count > 0)
         {
-            Console.WriteLine("The heroes win and the Uncoded One was defeated!");
+            return PartyType.Hero;
         }
         else
         {
-            Console.WriteLine("The heroes lost and the Uncoded One's forces have prevailed...");
+            return PartyType.Monster;
         }
     }
 
+    public static PartyType RunSeries(Party heroParty, List<Party> monsterParties)
+    {
+        foreach (var monsterParty in monsterParties)
+        {
+            Console.WriteLine("==============================");
+            Console.WriteLine("Battle is imminent!");
+            // Start battle
+            var battle = new Battle(heroParty, monsterParty);
+            var results = battle.Run();
+            if (results == PartyType.Monster)
+            {
+                Console.WriteLine("The heroes lost and the Uncoded One's forces have prevailed...");
+                return PartyType.Monster;
+            }
+        }
+
+        Console.WriteLine("The heroes win and the Uncoded One was defeated!");
+        return PartyType.Hero;
+    }
+    
     private PartyType GetOtherPartyType(PartyType partyType) => (PartyType)(((int)partyType + 1) % 2);
     private Party GetOtherParty(PartyType partyType) => GetParty(GetOtherPartyType(partyType));
 
@@ -53,10 +81,5 @@ class Battle(Party heroParty, Party monsterParty)
         PartyType.Monster => monsterParty,
         _ => throw new ArgumentOutOfRangeException()
     };
-
-    enum PartyType
-    {
-        Hero,
-        Monster
-    }
 }
+
