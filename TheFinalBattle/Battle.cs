@@ -14,13 +14,33 @@ class Battle(Party heroParty, Party monsterParty)
                 currentParty.Player.PickAction(member,
                     GetParty(currentPartyType),
                     GetOtherParty(currentPartyType));
+                
+                if (GetOtherParty(currentPartyType).Members.Count == 0)
+                {
+                    break;
+                }
                 Thread.Sleep(500);
             }
 
+            if (GetOtherParty(currentPartyType).Members.Count == 0)
+            {
+                Console.WriteLine("A party has been incapacitated. Battle over.");
+                break;
+            }
+            
             // Rotate to next party
             currentPartyType = GetOtherPartyType(currentPartyType);
 
             Console.WriteLine("----------");
+        }
+
+        if (GetParty(PartyType.Hero).Members.Count > 0)
+        {
+            Console.WriteLine("The heroes win and the Uncoded One was defeated!");
+        }
+        else
+        {
+            Console.WriteLine("The heroes lost and the Uncoded One's forces have prevailed...");
         }
     }
 

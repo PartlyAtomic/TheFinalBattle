@@ -2,12 +2,12 @@
 
 interface IPlayer
 {
-    public void PickAction(ICharacter currentCharacter, Party selfParty, Party enemyParty);
+    public void PickAction(Character currentCharacter, Party selfParty, Party enemyParty);
 }
 
 class ComputerPlayer : IPlayer
 {
-    public void PickAction(ICharacter currentCharacter, Party selfParty, Party enemyParty)
+    public void PickAction(Character currentCharacter, Party selfParty, Party enemyParty)
     {
         // Add logic for choosing target here as well, once action is known
         var action = RandomAction(currentCharacter);
@@ -17,7 +17,7 @@ class ComputerPlayer : IPlayer
             return;
         }
 
-        List<ICharacter> targets = action.TargetType switch
+        List<Character> targets = action.TargetType switch
         {
             ActionTargetType.None => [],
             ActionTargetType.Self => [currentCharacter],
@@ -30,7 +30,7 @@ class ComputerPlayer : IPlayer
         action.Act(currentCharacter, targets);
     }
 
-    public IAction? RandomAction(ICharacter character)
+    public IAction? RandomAction(Character character)
     {
         if (character.Actions.Count <= 0)
         {
@@ -45,7 +45,7 @@ class ComputerPlayer : IPlayer
 
 class HumanPlayer : IPlayer
 {
-    public void PickAction(ICharacter currentCharacter, Party selfParty, Party enemyParty)
+    public void PickAction(Character currentCharacter, Party selfParty, Party enemyParty)
     {
         throw new NotImplementedException();
     }
