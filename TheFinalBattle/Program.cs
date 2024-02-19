@@ -6,7 +6,8 @@ var programmerName = ReadAnswer("What is your name, True Programmer?") ?? "True 
 var heroParty = new Party(new ComputerPlayer(), [new CharacterTrueProgrammer(programmerName)]);
 var monsterParty1 = new Party(new ComputerPlayer(), [new CharacterSkeleton()]);
 var monsterParty2 = new Party(new ComputerPlayer(), [new CharacterSkeleton(), new CharacterSkeleton()]);
-List<Party> monsterParties = [monsterParty1, monsterParty2];
+var uncodedOneParty = new Party(new ComputerPlayer(), [new CharacterUncodedOne()]);
+List<Party> monsterParties = [monsterParty1, monsterParty2, uncodedOneParty];
 
 Battle.RunSeries(heroParty, monsterParties);
 

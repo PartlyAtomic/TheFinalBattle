@@ -71,3 +71,11 @@ class CharacterTrueProgrammer : Character
     {
     }
 }
+
+class CharacterUncodedOne : Character
+{
+    public CharacterUncodedOne() : base(15, [new ActionUnraveling()], "The Uncoded One")
+    {
+        
+    }
+}

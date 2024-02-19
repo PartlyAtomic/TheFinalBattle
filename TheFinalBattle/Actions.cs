@@ -93,3 +93,34 @@ class ActionBoneCrunch : IAction, IAttackAction
         return new AttackInfo(ExpectedDamage: .5f);
     }
 }
+
+class ActionUnraveling : IAction, IAttackAction
+{
+    public ActionTargetType TargetType => ActionTargetType.SingleEnemy;
+
+    public void Act(Character instigator, List<Character>? targets)
+    {
+        var numTargets = targets?.Count ?? 0;
+        if (numTargets != 1)
+        {
+            throw new ArgumentException();
+        }
+
+        var target = targets!.First();
+
+        Console.WriteLine($"{instigator.Name} used UNRAVELING on {target.Name}");
+
+        var damage = Random.Shared.Next(3);
+        Console.WriteLine($"UNRAVELING dealt {damage} damage to {target.Name}");
+        target.ApplyDamage(damage);
+        if (target.CurrentHP > 0)
+        {
+            Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
+        }
+    }
+
+    public AttackInfo GetAttackInfo()
+    {
+        return new AttackInfo(ExpectedDamage: 1.0f);
+    }
+}
