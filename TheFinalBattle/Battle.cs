@@ -16,7 +16,7 @@ class Battle(Party heroParty, Party monsterParty)
         {
             var currentParty = GetParty(currentPartyType);
             // Transfer items on death
-            var transferItems = (Character deadCharacter) =>
+            var onCharacterDeath = (Character deadCharacter, Character killer) =>
             {
                 if (deadCharacter.Equipment != null)
                 {
@@ -28,11 +28,14 @@ class Battle(Party heroParty, Party monsterParty)
                     Console.WriteLine($"{deadCharacter.Name} dropped {equipment.Name} when they perished.");
                     currentParty.AddInventoryItem(equipment);
                 }
+
+                killer.Experience += deadCharacter.Experience;
+                Console.WriteLine($"{killer.Name} gets {deadCharacter.Experience} XP.");
             };
 
             foreach (var member in GetOtherParty(currentPartyType).Members)
             {
-                member.EventDeath += transferItems;
+                member.EventDeath += onCharacterDeath;
             }
 
             foreach (var member in currentParty.Members)
@@ -55,7 +58,7 @@ class Battle(Party heroParty, Party monsterParty)
 
             foreach (var member in GetOtherParty(currentPartyType).Members)
             {
-                member.EventDeath -= transferItems;
+                member.EventDeath -= onCharacterDeath;
             }
 
             if (GetOtherParty(currentPartyType).Members.Count == 0)
@@ -117,6 +120,10 @@ class Battle(Party heroParty, Party monsterParty)
         }
 
         Console.WriteLine("The heroes win and the Uncoded One was defeated!");
+        foreach (var member in heroParty.Members)
+        {
+            Console.WriteLine($"{member.Name} now has {member.Experience} XP");
+        }
         return PartyType.Hero;
     }
 

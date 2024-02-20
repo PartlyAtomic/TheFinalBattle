@@ -25,7 +25,7 @@ enum DamageType
     Decoding
 }
 
-record AttackInfo(float Damage, DamageType DamageType = DamageType.Normal);
+record AttackInfo(Character Instigator, float Damage, DamageType DamageType = DamageType.Normal);
 
 // TODO: Add attack class as default implementation
 
@@ -58,7 +58,7 @@ class ActionPunch : IGameAction
 
 
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
-        var damageDealt = target.ApplyDamage(new AttackInfo(Damage: 1));
+        var damageDealt = target.ApplyDamage(new AttackInfo(instigator, 1));
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
@@ -86,7 +86,7 @@ class ActionBoneCrunch : IGameAction
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
         var damage = Random.Shared.Next(2);
-        var damageDealt = target.ApplyDamage(new AttackInfo(Damage: damage));
+        var damageDealt = target.ApplyDamage(new AttackInfo(instigator, damage));
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
@@ -114,7 +114,7 @@ class ActionBite : IGameAction
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
         var damage = Random.Shared.Next(1);
-        var damageDealt = target.ApplyDamage(new AttackInfo(Damage: damage));
+        var damageDealt = target.ApplyDamage(new AttackInfo(instigator, damage));
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
@@ -140,8 +140,8 @@ class ActionUnraveling : IGameAction
 
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
-        var damage = Random.Shared.Next(4);
-        var damageDealt = target.ApplyDamage(new AttackInfo(Damage: damage, DamageType: DamageType.Decoding));
+        var damage = Random.Shared.Next(0, 4);
+        var damageDealt = target.ApplyDamage(new AttackInfo(instigator, damage, DamageType.Decoding));
 
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)

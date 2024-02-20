@@ -31,7 +31,7 @@ class Party
         item.EventConsumed += OnItemConsumed;
     }
 
-    public void OnMemberDied(Character character)
+    public void OnMemberDied(Character character, Character killer)
     {
         _members.Remove(character);
         character.EventDeath -= OnMemberDied;
@@ -49,7 +49,9 @@ class Character
     public float MaxHP { get; protected init; }
     public float CurrentHP { get; protected set; }
 
-    public event Action<Character> EventDeath = _ => { };
+    public float Experience { get; set; } = 0;
+
+    public event Action<Character, Character> EventDeath = (_,_) => { };
 
     public List<IGameAction> Actions { get; protected init; } = [];
     public string Name { get; protected init; } = "Default Character";
@@ -60,13 +62,15 @@ class Character
 
     private List<AttackModifier>? AttackModifiers { get; }
 
-    protected Character(float maxHP, IEnumerable<IGameAction> actions, string name, IEquippable? equipment = null,
+    protected Character(float maxHP, IEnumerable<IGameAction> actions, string name, int xp,
+        IEquippable? equipment = null,
         List<AttackModifier> attackModifiers = null)
     {
         MaxHP = maxHP;
         CurrentHP = MaxHP;
         Actions = actions.ToList();
         Name = name;
+        Experience = xp;
         equipment?.Equip(this);
         AttackModifiers = attackModifiers;
     }
@@ -93,7 +97,7 @@ class Character
         if (CurrentHP == 0)
         {
             Console.WriteLine($"{Name} has been defeated!");
-            EventDeath?.Invoke(this);
+            EventDeath?.Invoke(this, damage.Instigator);
         }
 
         return initialHP - CurrentHP;
@@ -112,21 +116,22 @@ class Character
 
 class CharacterSkeleton : Character
 {
-    public CharacterSkeleton(IEquippable? equipment = null) : base(5, [new ActionBoneCrunch()], "SKELETON", equipment)
+    public CharacterSkeleton(IEquippable? equipment = null) : base(5, [new ActionBoneCrunch()], "SKELETON", 1,
+        equipment)
     {
     }
 }
 
 class CharacterUncodedOne : Character
 {
-    public CharacterUncodedOne() : base(15, [new ActionUnraveling()], "The Uncoded One")
+    public CharacterUncodedOne() : base(15, [new ActionUnraveling()], "The Uncoded One", 10)
     {
     }
 }
 
 class CharacterStoneAmarok : Character
 {
-    public CharacterStoneAmarok() : base(4, [new ActionBite()], "Stone Amarok",
+    public CharacterStoneAmarok() : base(4, [new ActionBite()], "Stone Amarok", 2,
         attackModifiers: [new StoneSkinModifier()])
     {
     }
@@ -135,7 +140,7 @@ class CharacterStoneAmarok : Character
 class CharacterTrueProgrammer : Character
 {
     public CharacterTrueProgrammer(string programmerName) : base(25, [new ActionPunch(), new ActionDoNothing()],
-        programmerName, new Sword(), [new ObjectSightModifier()])
+        programmerName, 0, new Sword(), [new ObjectSightModifier()])
     {
     }
 }
@@ -143,7 +148,7 @@ class CharacterTrueProgrammer : Character
 class CharacterVinFletcher : Character
 {
     public CharacterVinFletcher() : base(15, [new ActionPunch(), new ActionDoNothing()],
-        "Vin Fletcher", new VinsBow())
+        "Vin Fletcher", 0, new VinsBow())
     {
     }
 }
