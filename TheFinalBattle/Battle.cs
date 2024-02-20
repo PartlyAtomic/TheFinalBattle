@@ -53,7 +53,7 @@ class Battle(Party heroParty, Party monsterParty)
                     break;
                 }
 
-                Thread.Sleep(500);
+                // Thread.Sleep(500);
             }
 
             foreach (var member in GetOtherParty(currentPartyType).Members)

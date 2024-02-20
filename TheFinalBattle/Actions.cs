@@ -85,7 +85,7 @@ class ActionBoneCrunch : IGameAction
 
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
-        var damage = Random.Shared.Next(2);
+        var damage = Random.Shared.Next(3);
         var damageDealt = target.ApplyDamage(new AttackInfo(instigator, damage));
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
@@ -113,8 +113,7 @@ class ActionBite : IGameAction
 
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
-        var damage = Random.Shared.Next(1);
-        var damageDealt = target.ApplyDamage(new AttackInfo(instigator, damage));
+        var damageDealt = target.ApplyDamage(new AttackInfo(instigator, 3));
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
@@ -140,7 +139,7 @@ class ActionUnraveling : IGameAction
 
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
-        var damage = Random.Shared.Next(0, 4);
+        var damage = Random.Shared.Next(2, 10);
         var damageDealt = target.ApplyDamage(new AttackInfo(instigator, damage, DamageType.Decoding));
 
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
