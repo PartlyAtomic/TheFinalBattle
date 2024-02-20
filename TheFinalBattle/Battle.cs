@@ -17,6 +17,8 @@ class Battle(Party heroParty, Party monsterParty)
             var currentParty = GetParty(currentPartyType);
             foreach (var member in currentParty.Members)
             {
+                DisplayStatus(member, heroParty, monsterParty);
+                
                 Console.WriteLine($"It is {member.Name}'s turn...");
                 currentParty.Player.PickAction(member,
                     GetParty(currentPartyType),
@@ -71,7 +73,58 @@ class Battle(Party heroParty, Party monsterParty)
         Console.WriteLine("The heroes win and the Uncoded One was defeated!");
         return PartyType.Hero;
     }
-    
+
+    private void DisplayStatus(Character currentCharacter, Party heroParty, Party monsterParty)
+    {
+        Console.WriteLine("==================================== BATTLE ====================================");
+
+        foreach (var member in heroParty.Members)
+        {
+            if (currentCharacter == member)
+            {
+                Console.BackgroundColor = ConsoleColor.DarkYellow;
+                Console.ForegroundColor = ConsoleColor.Black;
+            }
+
+            var health = $"{member.CurrentHP}/{member.MaxHP}";
+            health = "(" + health.PadLeft(7 - health.Length / 2).PadRight(7) + ")";
+            var characterStatus = "| " + member.Name + health.PadLeft(40 - member.Name.Length - 2);
+            characterStatus = characterStatus.PadRight(80-1) + "|";
+            Console.Write(characterStatus);
+            
+            if (currentCharacter == member)
+            {
+                Console.ResetColor();
+            }
+            
+            Console.WriteLine();
+        }
+        Console.WriteLine("-------------------------------------- VS --------------------------------------");
+        foreach (var member in monsterParty.Members)
+        {
+            if (currentCharacter == member)
+            {
+                Console.BackgroundColor = ConsoleColor.DarkYellow;
+                Console.ForegroundColor = ConsoleColor.Black;
+            }
+
+            var health = $"{member.CurrentHP}/{member.MaxHP}";
+            health = "(" + health.PadLeft(7 - health.Length / 2).PadRight(7) + ")";
+            var characterStatus =  member.Name + " " + health + " |";
+            characterStatus = "|" + characterStatus.PadLeft(80-1);
+            Console.Write(characterStatus);
+            
+            if (currentCharacter == member)
+            {
+                Console.ResetColor();
+            }
+            
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("================================================================================");
+    }
+
     private PartyType GetOtherPartyType(PartyType partyType) => (PartyType)(((int)partyType + 1) % 2);
     private Party GetOtherParty(PartyType partyType) => GetParty(GetOtherPartyType(partyType));
 
@@ -82,4 +135,3 @@ class Battle(Party heroParty, Party monsterParty)
         _ => throw new ArgumentOutOfRangeException()
     };
 }
-
