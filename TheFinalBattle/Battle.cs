@@ -66,8 +66,6 @@ class Battle(Party heroParty, Party monsterParty)
 
             // Rotate to next party
             currentPartyType = GetOtherPartyType(currentPartyType);
-
-            Console.WriteLine("----------");
         }
 
         PartyType winner;

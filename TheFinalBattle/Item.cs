@@ -131,9 +131,8 @@ class SwordSkillSlash : IGameAction
 
         var target = targets!.First();
 
-        var damage = target.ApplyDamage(2);
-        Console.WriteLine($"{Name} dealt {damage} damage to {target.Name}");
-        target.ApplyDamage(2);
+        var damageDealt = target.ApplyDamage(2);
+        Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
             Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
@@ -164,8 +163,8 @@ class DaggerSkillStab : IGameAction
         var target = targets!.First();
 
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
-        var damage = target.ApplyDamage(1);
-        Console.WriteLine($"{Name} dealt {damage} damage to {target.Name}");
+        var damageDealt = target.ApplyDamage(1);
+        Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
             Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
@@ -203,8 +202,8 @@ class BowSkillQuickShot : IGameAction
         }
         else
         {
-            var damage = target.ApplyDamage(3);
-            Console.WriteLine($"{Name} dealt {damage} damage to {target.Name}");
+            var damageDealt = target.ApplyDamage(3);
+            Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
             if (target.CurrentHP > 0)
             {
                 Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");

@@ -21,6 +21,7 @@ interface IGameAction
 
 record AttackInfo(float ExpectedDamage);
 
+// TODO: Add attack class as default implementation
 interface IAttackAction
 {
     AttackInfo GetAttackInfo();
@@ -55,8 +56,8 @@ class ActionPunch : IGameAction, IAttackAction
 
 
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
-        var damage = target.ApplyDamage(1);
-        Console.WriteLine($"{Name} dealt {damage} damage to {target.Name}");
+        var damageDealt = target.ApplyDamage(1);
+        Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
             Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
@@ -102,6 +103,39 @@ class ActionBoneCrunch : IGameAction, IAttackAction
     }
 }
 
+class ActionBite : IGameAction, IAttackAction
+{
+    public string Name => "BITE";
+
+    public ActionTargetType TargetType => ActionTargetType.SingleEnemy;
+
+    public void Act(Character instigator, List<Character>? targets)
+    {
+        var numTargets = targets?.Count ?? 0;
+        if (numTargets != 1)
+        {
+            throw new ArgumentException();
+        }
+
+        var target = targets!.First();
+
+        Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
+
+        var damage = Random.Shared.Next(1);
+        var damageDealt = target.ApplyDamage(damage);
+        Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
+        if (target.CurrentHP > 0)
+        {
+            Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
+        }
+    }
+
+    public AttackInfo GetAttackInfo()
+    {
+        return new AttackInfo(ExpectedDamage: .5f);
+    }
+}
+
 class ActionUnraveling : IGameAction, IAttackAction
 {
     public string Name => "UNRAVELING";
@@ -120,8 +154,9 @@ class ActionUnraveling : IGameAction, IAttackAction
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
         var damage = Random.Shared.Next(3);
-        Console.WriteLine($"{Name} dealt {damage} damage to {target.Name}");
-        target.ApplyDamage(damage);
+        var damageDealt = target.ApplyDamage(damage);
+
+        Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
             Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");

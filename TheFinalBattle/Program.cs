@@ -27,11 +27,14 @@ var monsterParty1 = new Party(players.player2,
     [new CharacterSkeleton(new Dagger())],
     [new ItemHealthPotion()]);
 var monsterParty2 = new Party(players.player2,
+    [new CharacterStoneAmarok(), new CharacterStoneAmarok()],
+    []);
+var monsterParty3 = new Party(players.player2,
     [new CharacterSkeleton(), new CharacterSkeleton()],
     [new ItemHealthPotion(), new Dagger(), new Dagger()]);
 var uncodedOneParty = new Party(players.player2,
     [new CharacterUncodedOne()],
     [new ItemHealthPotion()]);
-List<Party> monsterParties = [monsterParty1, monsterParty2, uncodedOneParty];
+List<Party> monsterParties = [monsterParty1, monsterParty2, monsterParty3, uncodedOneParty];
 
 Battle.RunSeries(heroParty, monsterParties);

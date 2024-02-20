@@ -30,7 +30,7 @@ class Party
         Inventory.Add(item);
         item.EventConsumed += OnItemConsumed;
     }
-    
+
     public void OnMemberDied(Character character)
     {
         _members.Remove(character);
@@ -58,33 +58,45 @@ class Character
 
     public Party Party { get; set; }
 
-    protected Character(float maxHP, IEnumerable<IGameAction> actions, string name, IEquippable? equipment = null)
+    private List<AttackModifier>? AttackModifiers { get; }
+
+    protected Character(float maxHP, IEnumerable<IGameAction> actions, string name, IEquippable? equipment = null,
+        List<AttackModifier> attackModifiers = null)
     {
         MaxHP = maxHP;
         CurrentHP = MaxHP;
         Actions = actions.ToList();
         Name = name;
         equipment?.Equip(this);
+        AttackModifiers = attackModifiers;
     }
 
     public float ApplyDamage(float damage)
     {
         float initialHP = CurrentHP;
-        
+
         if (CurrentHP <= 0)
         {
             return 0;
         }
 
+        if (AttackModifiers != null)
+        {
+            foreach (var modifier in AttackModifiers)
+            {
+                damage = modifier.ModifyAttack(damage);
+            }
+        }
+
         CurrentHP = Math.Clamp(CurrentHP - damage, 0, MaxHP);
-        
+
         if (CurrentHP == 0)
         {
             Console.WriteLine($"{Name} has been defeated!");
             EventDeath?.Invoke(this);
         }
 
-        return CurrentHP - initialHP;
+        return initialHP - CurrentHP;
     }
 
     public void ApplyHealing(float healing)
@@ -105,6 +117,21 @@ class CharacterSkeleton : Character
     }
 }
 
+class CharacterUncodedOne : Character
+{
+    public CharacterUncodedOne() : base(15, [new ActionUnraveling()], "The Uncoded One")
+    {
+    }
+}
+
+class CharacterStoneAmarok : Character
+{
+    public CharacterStoneAmarok() : base(4, [new ActionBite()], "Stone Amarok",
+        attackModifiers: [new StoneSkinModifier()])
+    {
+    }
+}
+
 class CharacterTrueProgrammer : Character
 {
     public CharacterTrueProgrammer(string programmerName) : base(25, [new ActionPunch(), new ActionDoNothing()],
@@ -117,13 +144,6 @@ class CharacterVinFletcher : Character
 {
     public CharacterVinFletcher() : base(15, [new ActionPunch(), new ActionDoNothing()],
         "Vin Fletcher", new VinsBow())
-    {
-    }
-}
-
-class CharacterUncodedOne : Character
-{
-    public CharacterUncodedOne() : base(15, [new ActionUnraveling()], "The Uncoded One")
     {
     }
 }
