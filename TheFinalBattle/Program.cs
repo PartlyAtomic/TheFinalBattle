@@ -20,10 +20,18 @@ var mode = ReadAnswerOf<int>("""
 
 // Setup parties
 var programmerName = ReadAnswer("What is your name, True Programmer?") ?? "True Programmer";
-var heroParty = new Party(players.player1, [new CharacterTrueProgrammer(programmerName)]);
-var monsterParty1 = new Party(players.player2, [new CharacterSkeleton()]);
-var monsterParty2 = new Party(players.player2, [new CharacterSkeleton(), new CharacterSkeleton()]);
-var uncodedOneParty = new Party(players.player2, [new CharacterUncodedOne()]);
+var heroParty = new Party(players.player1,
+    [new CharacterTrueProgrammer(programmerName)],
+    [new ItemHealthPotion(), new ItemHealthPotion(), new ItemHealthPotion()]);
+var monsterParty1 = new Party(players.player2,
+    [new CharacterSkeleton()],
+    [new ItemHealthPotion()]);
+var monsterParty2 = new Party(players.player2,
+    [new CharacterSkeleton(), new CharacterSkeleton()],
+    [new ItemHealthPotion()]);
+var uncodedOneParty = new Party(players.player2,
+    [new CharacterUncodedOne()],
+    [new ItemHealthPotion()]);
 List<Party> monsterParties = [monsterParty1, monsterParty2, uncodedOneParty];
 
 Battle.RunSeries(heroParty, monsterParties);
