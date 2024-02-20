@@ -12,6 +12,8 @@ enum ActionTargetType
 // TODO: Back to base class instead of interface...?
 interface IAction
 {
+    public string Name { get; }
+
     public ActionTargetType TargetType { get; }
 
     public void Act(Character instigator, List<Character>? targets);
@@ -26,16 +28,19 @@ interface IAttackAction
 
 class ActionDoNothing : IAction
 {
+    public string Name => "NOTHING";
     public ActionTargetType TargetType => ActionTargetType.None;
 
     public void Act(Character instigator, List<Character>? targets)
     {
-        Console.WriteLine($"{instigator.Name} did NOTHING");
+        Console.WriteLine($"{instigator.Name} did {Name}");
     }
 }
 
 class ActionPunch : IAction, IAttackAction
 {
+    public string Name => "PUNCH";
+
     public ActionTargetType TargetType => ActionTargetType.SingleEnemy;
 
     public void Act(Character instigator, List<Character>? targets)
@@ -48,8 +53,8 @@ class ActionPunch : IAction, IAttackAction
 
         var target = targets!.First();
 
-        Console.WriteLine($"{instigator.Name} used PUNCH on {target.Name}");
-        Console.WriteLine($"PUNCH dealt 1 damage to {target.Name}");
+        Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
+        Console.WriteLine($"{Name} dealt 1 damage to {target.Name}");
         target.ApplyDamage(1);
         if (target.CurrentHP > 0)
         {
@@ -65,6 +70,8 @@ class ActionPunch : IAction, IAttackAction
 
 class ActionBoneCrunch : IAction, IAttackAction
 {
+    public string Name => "BONE CRUNCH";
+
     public ActionTargetType TargetType => ActionTargetType.SingleEnemy;
 
     public void Act(Character instigator, List<Character>? targets)
@@ -77,10 +84,10 @@ class ActionBoneCrunch : IAction, IAttackAction
 
         var target = targets!.First();
 
-        Console.WriteLine($"{instigator.Name} used BONE CRUNCH on {target.Name}");
+        Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
         var damage = Random.Shared.Next(2);
-        Console.WriteLine($"BONE CRUNCH dealt {damage} damage to {target.Name}");
+        Console.WriteLine($"{Name} dealt {damage} damage to {target.Name}");
         target.ApplyDamage(damage);
         if (target.CurrentHP > 0)
         {
@@ -96,6 +103,7 @@ class ActionBoneCrunch : IAction, IAttackAction
 
 class ActionUnraveling : IAction, IAttackAction
 {
+    public string Name => "UNRAVELING";
     public ActionTargetType TargetType => ActionTargetType.SingleEnemy;
 
     public void Act(Character instigator, List<Character>? targets)
@@ -108,10 +116,10 @@ class ActionUnraveling : IAction, IAttackAction
 
         var target = targets!.First();
 
-        Console.WriteLine($"{instigator.Name} used UNRAVELING on {target.Name}");
+        Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
         var damage = Random.Shared.Next(3);
-        Console.WriteLine($"UNRAVELING dealt {damage} damage to {target.Name}");
+        Console.WriteLine($"{Name} dealt {damage} damage to {target.Name}");
         target.ApplyDamage(damage);
         if (target.CurrentHP > 0)
         {

@@ -1,4 +1,6 @@
-﻿namespace TheFinalBattle;
+﻿using static TheFinalBattle.Utilities;
+
+namespace TheFinalBattle;
 
 interface IPlayer
 {
@@ -47,6 +49,26 @@ class HumanPlayer : IPlayer
 {
     public void PickAction(Character currentCharacter, Party selfParty, Party enemyParty)
     {
-        throw new NotImplementedException();
+        if (currentCharacter.Actions.Count == 0)
+        {
+            Console.WriteLine("No possible actions!");
+            return;
+        }
+
+        for (var i = 0; i < currentCharacter.Actions.Count; i++)
+        {
+            Console.WriteLine($"{i + 1} - {currentCharacter.Actions[i].Name}");
+        }
+
+        int choice;
+        do
+        {
+            choice = ReadAnswerOf<int>("What do you want to do?") - 1;
+        } while (choice < 0 || choice >= currentCharacter.Actions.Count);
+
+        // TODO: Ask for a target depending on action's target type
+        // For now nothing will break if the first member of the enemy party is always selected
+
+        currentCharacter.Actions[choice].Act(currentCharacter, [enemyParty.Members[0]]);
     }
 }

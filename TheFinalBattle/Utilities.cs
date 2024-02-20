@@ -1,4 +1,7 @@
-﻿namespace TheFinalBattle;
+﻿using System.Globalization;
+using System.Numerics;
+
+namespace TheFinalBattle;
 
 public static class Utilities
 {
@@ -20,5 +23,12 @@ public static class Utilities
         Console.Write(question);
         Console.Write(" ");
         return Console.ReadLine();
+    }
+
+    public static T ReadAnswerOf<T>(string question) where T : INumberBase<T>
+    {
+        Console.Write(question);
+        Console.Write(" ");
+        return T.Parse(Console.ReadLine()!, NumberStyles.Any, null);
     }
 }

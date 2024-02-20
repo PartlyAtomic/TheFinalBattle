@@ -29,7 +29,7 @@ class Character
     public float MaxHP { get; protected init; }
     public float CurrentHP { get; protected set; }
 
-    public event Action<Character> EventDeath; 
+    public event Action<Character> EventDeath = _ => { }; 
     
     public IReadOnlyList<IAction> Actions { get; protected init; } = [];
     public string Name { get; protected init; } = "Default Character";
@@ -67,7 +67,7 @@ class CharacterSkeleton : Character
 
 class CharacterTrueProgrammer : Character
 {
-    public CharacterTrueProgrammer(string programmerName) : base(25, [new ActionPunch()], programmerName)
+    public CharacterTrueProgrammer(string programmerName) : base(25, [new ActionPunch(), new ActionDoNothing()], programmerName)
     {
     }
 }
