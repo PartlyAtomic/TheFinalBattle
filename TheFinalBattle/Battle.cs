@@ -15,6 +15,26 @@ class Battle(Party heroParty, Party monsterParty)
         while (true)
         {
             var currentParty = GetParty(currentPartyType);
+            // Transfer items on death
+            var transferItems = (Character deadCharacter) =>
+            {
+                if (deadCharacter.Equipment != null)
+                {
+                    var equipment = deadCharacter.Equipment;
+                    // Behavior of unequip is to place the item back in the party inventory, but that's not desired here
+                    // Instead since the character is dead, just removing it directly
+                    // deadCharacter.Equipment.Unequip(deadCharacter);
+                    deadCharacter.Equipment = null;
+                    Console.WriteLine($"{deadCharacter.Name} dropped {equipment.Name} when they perished.");
+                    currentParty.AddInventoryItem(equipment);
+                }
+            };
+
+            foreach (var member in GetOtherParty(currentPartyType).Members)
+            {
+                member.EventDeath += transferItems;
+            }
+
             foreach (var member in currentParty.Members)
             {
                 DisplayStatus(member, heroParty, monsterParty);
@@ -24,12 +44,18 @@ class Battle(Party heroParty, Party monsterParty)
                     GetParty(currentPartyType),
                     GetOtherParty(currentPartyType));
 
+
                 if (GetOtherParty(currentPartyType).Members.Count == 0)
                 {
                     break;
                 }
 
                 Thread.Sleep(500);
+            }
+
+            foreach (var member in GetOtherParty(currentPartyType).Members)
+            {
+                member.EventDeath -= transferItems;
             }
 
             if (GetOtherParty(currentPartyType).Members.Count == 0)
@@ -44,14 +70,36 @@ class Battle(Party heroParty, Party monsterParty)
             Console.WriteLine("----------");
         }
 
+        PartyType winner;
         if (GetParty(PartyType.Hero).Members.Count > 0)
         {
-            return PartyType.Hero;
+            winner = PartyType.Hero;
         }
         else
         {
-            return PartyType.Monster;
+            winner = PartyType.Monster;
         }
+
+        var winningParty = GetParty(winner);
+        var losingParty = GetOtherParty(winner);
+
+        List<IItem> acquiredItems = new List<IItem>();
+
+        foreach (var item in losingParty.Inventory)
+        {
+            winningParty.AddInventoryItem(item);
+            acquiredItems.Add(item);
+        }
+
+        losingParty.Inventory.Clear();
+
+        if (acquiredItems.Count > 0)
+        {
+            var itemList = String.Join(", ", (from item in acquiredItems select item.Name).ToList());
+            Console.WriteLine($"The following item(s) went to the winning party: {itemList}");
+        }
+
+        return winner;
     }
 
     public static PartyType RunSeries(Party heroParty, List<Party> monsterParties)
