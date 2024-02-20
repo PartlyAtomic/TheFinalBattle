@@ -131,7 +131,7 @@ class SwordSkillSlash : IGameAction
 
         var target = targets!.First();
 
-        var damageDealt = target.ApplyDamage(2);
+        var damageDealt = target.ApplyDamage(new AttackInfo(Damage: 2));
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
@@ -163,7 +163,7 @@ class DaggerSkillStab : IGameAction
         var target = targets!.First();
 
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
-        var damageDealt = target.ApplyDamage(1);
+        var damageDealt = target.ApplyDamage(new AttackInfo(Damage: 1));
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
@@ -202,7 +202,7 @@ class BowSkillQuickShot : IGameAction
         }
         else
         {
-            var damageDealt = target.ApplyDamage(3);
+            var damageDealt = target.ApplyDamage(new AttackInfo(Damage: 2));
             Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
             if (target.CurrentHP > 0)
             {

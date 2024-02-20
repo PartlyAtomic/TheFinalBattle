@@ -71,7 +71,7 @@ class Character
         AttackModifiers = attackModifiers;
     }
 
-    public float ApplyDamage(float damage)
+    public float ApplyDamage(AttackInfo damage)
     {
         float initialHP = CurrentHP;
 
@@ -88,7 +88,7 @@ class Character
             }
         }
 
-        CurrentHP = Math.Clamp(CurrentHP - damage, 0, MaxHP);
+        CurrentHP = Math.Clamp(CurrentHP - damage.Damage, 0, MaxHP);
 
         if (CurrentHP == 0)
         {
@@ -135,7 +135,7 @@ class CharacterStoneAmarok : Character
 class CharacterTrueProgrammer : Character
 {
     public CharacterTrueProgrammer(string programmerName) : base(25, [new ActionPunch(), new ActionDoNothing()],
-        programmerName, new Sword())
+        programmerName, new Sword(), [new ObjectSightModifier()])
     {
     }
 }

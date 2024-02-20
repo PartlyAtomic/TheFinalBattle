@@ -19,13 +19,15 @@ interface IGameAction
     public void Act(Character instigator, List<Character>? targets);
 }
 
-record AttackInfo(float ExpectedDamage);
+enum DamageType
+{
+    Normal,
+    Decoding
+}
+
+record AttackInfo(float Damage, DamageType DamageType = DamageType.Normal);
 
 // TODO: Add attack class as default implementation
-interface IAttackAction
-{
-    AttackInfo GetAttackInfo();
-}
 
 class ActionDoNothing : IGameAction
 {
@@ -38,7 +40,7 @@ class ActionDoNothing : IGameAction
     }
 }
 
-class ActionPunch : IGameAction, IAttackAction
+class ActionPunch : IGameAction
 {
     public string Name => "PUNCH";
 
@@ -56,21 +58,16 @@ class ActionPunch : IGameAction, IAttackAction
 
 
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
-        var damageDealt = target.ApplyDamage(1);
+        var damageDealt = target.ApplyDamage(new AttackInfo(Damage: 1));
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
             Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
         }
     }
-
-    public AttackInfo GetAttackInfo()
-    {
-        return new AttackInfo(ExpectedDamage: 1);
-    }
 }
 
-class ActionBoneCrunch : IGameAction, IAttackAction
+class ActionBoneCrunch : IGameAction
 {
     public string Name => "BONE CRUNCH";
 
@@ -89,21 +86,16 @@ class ActionBoneCrunch : IGameAction, IAttackAction
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
         var damage = Random.Shared.Next(2);
-        var damageDealt = target.ApplyDamage(damage);
+        var damageDealt = target.ApplyDamage(new AttackInfo(Damage: damage));
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
             Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
         }
     }
-
-    public AttackInfo GetAttackInfo()
-    {
-        return new AttackInfo(ExpectedDamage: .5f);
-    }
 }
 
-class ActionBite : IGameAction, IAttackAction
+class ActionBite : IGameAction
 {
     public string Name => "BITE";
 
@@ -122,21 +114,16 @@ class ActionBite : IGameAction, IAttackAction
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
         var damage = Random.Shared.Next(1);
-        var damageDealt = target.ApplyDamage(damage);
+        var damageDealt = target.ApplyDamage(new AttackInfo(Damage: damage));
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
             Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
         }
     }
-
-    public AttackInfo GetAttackInfo()
-    {
-        return new AttackInfo(ExpectedDamage: .5f);
-    }
 }
 
-class ActionUnraveling : IGameAction, IAttackAction
+class ActionUnraveling : IGameAction
 {
     public string Name => "UNRAVELING";
     public ActionTargetType TargetType => ActionTargetType.SingleEnemy;
@@ -153,18 +140,13 @@ class ActionUnraveling : IGameAction, IAttackAction
 
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
-        var damage = Random.Shared.Next(3);
-        var damageDealt = target.ApplyDamage(damage);
+        var damage = Random.Shared.Next(4);
+        var damageDealt = target.ApplyDamage(new AttackInfo(Damage: damage, DamageType: DamageType.Decoding));
 
         Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
             Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
         }
-    }
-
-    public AttackInfo GetAttackInfo()
-    {
-        return new AttackInfo(ExpectedDamage: 1.0f);
     }
 }
