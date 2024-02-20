@@ -40,7 +40,6 @@ class ItemHealthPotion : IItem, IGameAction
     }
 }
 
-// When equipped add skill to character skills
 class Sword : IEquippable, IGameAction
 {
     public event Action<IItem>? EventConsumed;
@@ -223,6 +222,107 @@ class DaggerSkillStab : IGameAction
         if (target.CurrentHP > 0)
         {
             Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
+        }
+    }
+}
+
+class VinsBow : IEquippable, IGameAction
+{
+    public event Action<IItem>? EventConsumed;
+
+    string IGameAction.Name => Equipped switch
+    {
+        false => "Equip Vin's Bow",
+        true => "Unequip Vin's Bow"
+    };
+
+    string IItem.Name => "Vin's Bow";
+    
+
+    public ActionTargetType TargetType => ActionTargetType.Self;
+    public bool Equipped = false;
+    public IGameAction? Skill => new BowSkillQuickShot();
+
+    public void Act(Character instigator, List<Character>? targets)
+    {
+        if (!Equipped)
+        {
+            Equip(instigator);
+        }
+        else
+        {
+            Unequip(instigator);
+        }
+    }
+
+    public void Equip(Character character)
+    {
+        // Unequip current weapon
+        character.Equipment?.Unequip(character);
+        // Remove this from inventory (consume)
+        EventConsumed?.Invoke(this);
+        // Equip this weapon
+        character.Equipment = this;
+        // Add skill to character skills
+        if (Skill != null)
+        {
+            character.Actions.Add(Skill);
+        }
+    }
+
+    public void Unequip(Character character)
+    {
+        // Unequip current weapon
+        if (character.Equipment != this)
+        {
+            throw new ArgumentException($"Character does not have {this} equipped");
+        }
+
+        character.Equipment = null;
+        // Add this to inventory
+        character.Party.AddInventoryItem(this);
+        // Remove skill from character skills
+        if (Skill != null)
+        {
+            
+            var foundSkill = character.Actions.FirstOrDefault(x => x.GetType() == Skill.GetType());
+            if (foundSkill != null)
+            { 
+                character.Actions.Remove(foundSkill);
+            }
+        }
+    }
+}
+
+class BowSkillQuickShot : IGameAction
+{
+    public string Name { get; } = "Quick Shot";
+    public ActionTargetType TargetType { get; } = ActionTargetType.SingleEnemy;
+
+    public void Act(Character instigator, List<Character>? targets)
+    {
+        var numTargets = targets?.Count ?? 0;
+        if (numTargets != 1)
+        {
+            throw new ArgumentException();
+        }
+
+        var target = targets!.First();
+
+        Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
+        var missed = Random.Shared.NextDouble() < .5;
+        if (missed)
+        {
+            Console.WriteLine($"{Name} missed the target...");
+        }
+        else
+        {
+            Console.WriteLine($"{Name} dealt 3 damage to {target.Name}");
+            target.ApplyDamage(3);
+            if (target.CurrentHP > 0)
+            {
+                Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ var mode = ReadAnswerOf<int>("""
 // Setup parties
 var programmerName = ReadAnswer("What is your name, True Programmer?") ?? "True Programmer";
 var heroParty = new Party(players.player1,
-    [new CharacterTrueProgrammer(programmerName)],
+    [new CharacterTrueProgrammer(programmerName), new CharacterVinFletcher()],
     [new ItemHealthPotion(), new ItemHealthPotion(), new ItemHealthPotion()]);
 var monsterParty1 = new Party(players.player2,
     [new CharacterSkeleton(new Dagger())],
