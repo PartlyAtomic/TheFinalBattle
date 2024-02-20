@@ -2,24 +2,16 @@
 
 interface IItem
 {
-    public event Action<IItem> EventConsumed;
+    public event Action<IItem>? EventConsumed;
 
     public string Name { get; }
 }
 
-interface IEquippable : IItem
-{
-    void Equip(Character character);
-
-    void Unequip(Character character);
-
-    IGameAction Skill { get; }
-}
-
 class ItemHealthPotion : IItem, IGameAction
 {
-    public event Action<IItem> EventConsumed = _ => { };
+    public event Action<IItem>? EventConsumed;
     public string Name => "Health Potion";
+
     public ActionTargetType TargetType => ActionTargetType.Self;
 
     public void Act(Character instigator, List<Character>? targets)
@@ -40,34 +32,32 @@ class ItemHealthPotion : IItem, IGameAction
     }
 }
 
-class Sword : IEquippable, IGameAction
+interface IEquippable : IItem
 {
+    void Equip(Character character);
+
+    void Unequip(Character character);
+
+    IGameAction? Skill { get; }
+}
+
+abstract class Equipment(string name, IGameAction skill) : IEquippable, IGameAction
+{
+    public ActionTargetType TargetType => ActionTargetType.Self;
+
     public event Action<IItem>? EventConsumed;
+    string IItem.Name => name;
 
     string IGameAction.Name => Equipped switch
     {
-        false => "Equip Sword",
-        true => "Unequip Sword"
+        false => "Equip " + (this as IItem).Name,
+        true => "Unequip " + (this as IItem).Name
     };
 
-    string IItem.Name => "Sword";
-    
+    public IGameAction? Skill => skill;
 
-    public ActionTargetType TargetType => ActionTargetType.Self;
     public bool Equipped = false;
-    public IGameAction? Skill => new SwordSkillSlash();
 
-    public void Act(Character instigator, List<Character>? targets)
-    {
-        if (!Equipped)
-        {
-            Equip(instigator);
-        }
-        else
-        {
-            Unequip(instigator);
-        }
-    }
 
     public void Equip(Character character)
     {
@@ -98,13 +88,31 @@ class Sword : IEquippable, IGameAction
         // Remove skill from character skills
         if (Skill != null)
         {
-            
             var foundSkill = character.Actions.FirstOrDefault(x => x.GetType() == Skill.GetType());
             if (foundSkill != null)
-            { 
+            {
                 character.Actions.Remove(foundSkill);
             }
         }
+    }
+
+    public void Act(Character instigator, List<Character>? targets)
+    {
+        if (!Equipped)
+        {
+            Equip(instigator);
+        }
+        else
+        {
+            Unequip(instigator);
+        }
+    }
+}
+
+class Sword : Equipment
+{
+    public Sword() : base("Sword", new SwordSkillSlash())
+    {
     }
 }
 
@@ -133,71 +141,10 @@ class SwordSkillSlash : IGameAction
     }
 }
 
-class Dagger : IEquippable, IGameAction
+class Dagger : Equipment
 {
-    public event Action<IItem>? EventConsumed;
-
-    string IGameAction.Name => Equipped switch
+    public Dagger() : base("Dagger", new DaggerSkillStab())
     {
-        false => "Equip Dagger",
-        true => "Unequip Dagger"
-    };
-    
-    string IItem.Name => "Dagger";
-
-
-    public ActionTargetType TargetType => ActionTargetType.Self;
-    public bool Equipped = false;
-    public IGameAction? Skill => new DaggerSkillStab();
-
-    public void Act(Character instigator, List<Character>? targets)
-    {
-        if (!Equipped)
-        {
-            Equip(instigator);
-        }
-        else
-        {
-            Unequip(instigator);
-        }
-    }
-
-    public void Equip(Character character)
-    {
-        // Unequip current weapon
-        character.Equipment?.Unequip(character);
-        // Remove this from inventory (consume)
-        EventConsumed?.Invoke(this);
-        // Equip this weapon
-        character.Equipment = this;
-        // Add skill to character skills
-        if (Skill != null)
-        {
-            character.Actions.Add(Skill);
-        }
-    }
-
-    public void Unequip(Character character)
-    {
-        // Unequip current weapon
-        if (character.Equipment != this)
-        {
-            throw new ArgumentException($"Character does not have {this} equipped");
-        }
-
-        character.Equipment = null;
-        // Add this to inventory
-        character.Party.AddInventoryItem(this);
-        // Remove skill from character skills
-        if (Skill != null)
-        {
-            
-            var foundSkill = character.Actions.FirstOrDefault(x => x.GetType() == Skill.GetType());
-            if (foundSkill != null)
-            { 
-                character.Actions.Remove(foundSkill);
-            }
-        }
     }
 }
 
@@ -226,71 +173,10 @@ class DaggerSkillStab : IGameAction
     }
 }
 
-class VinsBow : IEquippable, IGameAction
+class VinsBow : Equipment
 {
-    public event Action<IItem>? EventConsumed;
-
-    string IGameAction.Name => Equipped switch
+    public VinsBow() : base("Vin's Bow", new BowSkillQuickShot())
     {
-        false => "Equip Vin's Bow",
-        true => "Unequip Vin's Bow"
-    };
-
-    string IItem.Name => "Vin's Bow";
-    
-
-    public ActionTargetType TargetType => ActionTargetType.Self;
-    public bool Equipped = false;
-    public IGameAction? Skill => new BowSkillQuickShot();
-
-    public void Act(Character instigator, List<Character>? targets)
-    {
-        if (!Equipped)
-        {
-            Equip(instigator);
-        }
-        else
-        {
-            Unequip(instigator);
-        }
-    }
-
-    public void Equip(Character character)
-    {
-        // Unequip current weapon
-        character.Equipment?.Unequip(character);
-        // Remove this from inventory (consume)
-        EventConsumed?.Invoke(this);
-        // Equip this weapon
-        character.Equipment = this;
-        // Add skill to character skills
-        if (Skill != null)
-        {
-            character.Actions.Add(Skill);
-        }
-    }
-
-    public void Unequip(Character character)
-    {
-        // Unequip current weapon
-        if (character.Equipment != this)
-        {
-            throw new ArgumentException($"Character does not have {this} equipped");
-        }
-
-        character.Equipment = null;
-        // Add this to inventory
-        character.Party.AddInventoryItem(this);
-        // Remove skill from character skills
-        if (Skill != null)
-        {
-            
-            var foundSkill = character.Actions.FirstOrDefault(x => x.GetType() == Skill.GetType());
-            if (foundSkill != null)
-            { 
-                character.Actions.Remove(foundSkill);
-            }
-        }
     }
 }
 
