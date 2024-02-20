@@ -24,11 +24,11 @@ var heroParty = new Party(players.player1,
     [new CharacterTrueProgrammer(programmerName)],
     [new ItemHealthPotion(), new ItemHealthPotion(), new ItemHealthPotion()]);
 var monsterParty1 = new Party(players.player2,
-    [new CharacterSkeleton()],
+    [new CharacterSkeleton(new Dagger())],
     [new ItemHealthPotion()]);
 var monsterParty2 = new Party(players.player2,
     [new CharacterSkeleton(), new CharacterSkeleton()],
-    [new ItemHealthPotion()]);
+    [new ItemHealthPotion(), new Dagger(), new Dagger()]);
 var uncodedOneParty = new Party(players.player2,
     [new CharacterUncodedOne()],
     [new ItemHealthPotion()]);

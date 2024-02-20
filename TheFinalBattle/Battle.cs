@@ -18,7 +18,7 @@ class Battle(Party heroParty, Party monsterParty)
             foreach (var member in currentParty.Members)
             {
                 DisplayStatus(member, heroParty, monsterParty);
-                
+
                 Console.WriteLine($"It is {member.Name}'s turn...");
                 currentParty.Player.PickAction(member,
                     GetParty(currentPartyType),
@@ -87,18 +87,25 @@ class Battle(Party heroParty, Party monsterParty)
             }
 
             var health = $"{member.CurrentHP}/{member.MaxHP}";
-            health = "(" + health.PadLeft(7 - health.Length / 2).PadRight(7) + ")";
-            var characterStatus = "| " + member.Name + health.PadLeft(40 - member.Name.Length - 2);
-            characterStatus = characterStatus.PadRight(80-1) + "|";
+            health = "(" + health.PadLeft(4 + (int)Math.Log10(member.MaxHP) + 1).PadRight(7) + ")";
+            var characterStatus = "| " + member.Name;
+            if (member.Equipment != null)
+            {
+                characterStatus += $"[{member.Equipment.Name}]";
+            }
+
+            characterStatus += health.PadLeft(40 - characterStatus.Length);
+            characterStatus = characterStatus.PadRight(80 - 1) + "|";
             Console.Write(characterStatus);
-            
+
             if (currentCharacter == member)
             {
                 Console.ResetColor();
             }
-            
+
             Console.WriteLine();
         }
+
         Console.WriteLine("-------------------------------------- VS --------------------------------------");
         foreach (var member in monsterParty.Members)
         {
@@ -109,16 +116,22 @@ class Battle(Party heroParty, Party monsterParty)
             }
 
             var health = $"{member.CurrentHP}/{member.MaxHP}";
-            health = "(" + health.PadLeft(7 - health.Length / 2).PadRight(7) + ")";
-            var characterStatus =  member.Name + " " + health + " |";
-            characterStatus = "|" + characterStatus.PadLeft(80-1);
+            health = "(" + health.PadLeft(4 + (int)Math.Log10(member.MaxHP) + 1).PadRight(7) + ")";
+            var characterStatus = member.Name;
+            if (member.Equipment != null)
+            {
+                characterStatus += $"[{member.Equipment.Name}]";
+            }
+
+            characterStatus += " " + health + " |";
+            characterStatus = "|" + characterStatus.PadLeft(80 - 1);
             Console.Write(characterStatus);
-            
+
             if (currentCharacter == member)
             {
                 Console.ResetColor();
             }
-            
+
             Console.WriteLine();
         }
 

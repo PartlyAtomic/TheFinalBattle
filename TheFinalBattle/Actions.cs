@@ -10,7 +10,7 @@ enum ActionTargetType
 }
 
 // TODO: Back to base class instead of interface...?
-interface IAction
+interface IGameAction
 {
     public string Name { get; }
 
@@ -26,7 +26,7 @@ interface IAttackAction
     AttackInfo GetAttackInfo();
 }
 
-class ActionDoNothing : IAction
+class ActionDoNothing : IGameAction
 {
     public string Name => "NOTHING";
     public ActionTargetType TargetType => ActionTargetType.None;
@@ -37,7 +37,7 @@ class ActionDoNothing : IAction
     }
 }
 
-class ActionPunch : IAction, IAttackAction
+class ActionPunch : IGameAction, IAttackAction
 {
     public string Name => "PUNCH";
 
@@ -68,7 +68,7 @@ class ActionPunch : IAction, IAttackAction
     }
 }
 
-class ActionBoneCrunch : IAction, IAttackAction
+class ActionBoneCrunch : IGameAction, IAttackAction
 {
     public string Name => "BONE CRUNCH";
 
@@ -101,7 +101,7 @@ class ActionBoneCrunch : IAction, IAttackAction
     }
 }
 
-class ActionUnraveling : IAction, IAttackAction
+class ActionUnraveling : IGameAction, IAttackAction
 {
     public string Name => "UNRAVELING";
     public ActionTargetType TargetType => ActionTargetType.SingleEnemy;

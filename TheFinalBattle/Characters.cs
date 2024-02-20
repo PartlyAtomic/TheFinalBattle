@@ -11,19 +11,26 @@ class Party
     {
         Player = player;
         _members = members;
-        Inventory = inventory;
+        Inventory = new List<IItem>();
 
         foreach (var member in _members)
         {
+            member.Party = this;
             member.EventDeath += OnMemberDied;
         }
 
         foreach (var item in inventory)
         {
-            item.EventConsumed += OnItemConsumed;
+            AddInventoryItem(item);
         }
     }
 
+    public void AddInventoryItem(IItem item)
+    {
+        Inventory.Add(item);
+        item.EventConsumed += OnItemConsumed;
+    }
+    
     public void OnMemberDied(Character character)
     {
         _members.Remove(character);
@@ -44,15 +51,20 @@ class Character
 
     public event Action<Character> EventDeath = _ => { };
 
-    public IReadOnlyList<IAction> Actions { get; protected init; } = [];
+    public List<IGameAction> Actions { get; protected init; } = [];
     public string Name { get; protected init; } = "Default Character";
 
-    protected Character(float maxHP, IEnumerable<IAction> actions, string name)
+    public IEquippable? Equipment { get; set; }
+
+    public Party Party { get; set; }
+
+    protected Character(float maxHP, IEnumerable<IGameAction> actions, string name, IEquippable? equipment = null)
     {
         MaxHP = maxHP;
         CurrentHP = MaxHP;
         Actions = actions.ToList();
         Name = name;
+        equipment?.Equip(this);
     }
 
     public void ApplyDamage(float damage)
@@ -83,7 +95,7 @@ class Character
 
 class CharacterSkeleton : Character
 {
-    public CharacterSkeleton() : base(5, [new ActionBoneCrunch()], "SKELETON")
+    public CharacterSkeleton(IEquippable? equipment = null) : base(5, [new ActionBoneCrunch()], "SKELETON", equipment)
     {
     }
 }
@@ -91,7 +103,7 @@ class CharacterSkeleton : Character
 class CharacterTrueProgrammer : Character
 {
     public CharacterTrueProgrammer(string programmerName) : base(25, [new ActionPunch(), new ActionDoNothing()],
-        programmerName)
+        programmerName, new Sword())
     {
     }
 }
