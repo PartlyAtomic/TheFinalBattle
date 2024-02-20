@@ -139,7 +139,7 @@ class Battle(Party heroParty, Party monsterParty)
             var characterStatus = "| " + member.Name;
             if (member.Equipment != null)
             {
-                characterStatus += $"[{member.Equipment.Name}]";
+                characterStatus += $" [{member.Equipment.Name}]";
             }
 
             characterStatus += health.PadLeft(40 - characterStatus.Length);
@@ -168,7 +168,7 @@ class Battle(Party heroParty, Party monsterParty)
             var characterStatus = member.Name;
             if (member.Equipment != null)
             {
-                characterStatus += $"[{member.Equipment.Name}]";
+                characterStatus += $" [{member.Equipment.Name}]";
             }
 
             characterStatus += " " + health + " |";
