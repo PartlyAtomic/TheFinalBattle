@@ -67,19 +67,24 @@ class Character
         equipment?.Equip(this);
     }
 
-    public void ApplyDamage(float damage)
+    public float ApplyDamage(float damage)
     {
+        float initialHP = CurrentHP;
+        
         if (CurrentHP <= 0)
         {
-            return;
+            return 0;
         }
 
         CurrentHP = Math.Clamp(CurrentHP - damage, 0, MaxHP);
+        
         if (CurrentHP == 0)
         {
             Console.WriteLine($"{Name} has been defeated!");
             EventDeath?.Invoke(this);
         }
+
+        return CurrentHP - initialHP;
     }
 
     public void ApplyHealing(float healing)

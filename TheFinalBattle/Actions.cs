@@ -53,9 +53,10 @@ class ActionPunch : IGameAction, IAttackAction
 
         var target = targets!.First();
 
+
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
-        Console.WriteLine($"{Name} dealt 1 damage to {target.Name}");
-        target.ApplyDamage(1);
+        var damage = target.ApplyDamage(1);
+        Console.WriteLine($"{Name} dealt {damage} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
             Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
@@ -87,8 +88,8 @@ class ActionBoneCrunch : IGameAction, IAttackAction
         Console.WriteLine($"{instigator.Name} used {Name} on {target.Name}");
 
         var damage = Random.Shared.Next(2);
-        Console.WriteLine($"{Name} dealt {damage} damage to {target.Name}");
-        target.ApplyDamage(damage);
+        var damageDealt = target.ApplyDamage(damage);
+        Console.WriteLine($"{Name} dealt {damageDealt} damage to {target.Name}");
         if (target.CurrentHP > 0)
         {
             Console.WriteLine($"{target.Name} is now at {target.CurrentHP}/{target.MaxHP}");
